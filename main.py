@@ -1,3 +1,4 @@
+#In dieser File teste ich die Funktionalität des Spiels
 from world import *
 
 
