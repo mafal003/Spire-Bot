@@ -480,14 +480,30 @@ class World:
     
     def get_state_machinereadble(self):
         #Soll den Kompletten State des Spiels zurückgeben maschinenlesbar
+        situations = {
+            "Creating World": 0,
+            "Combat": 1,
+            "Choose Card Target": 2,
+            "Next Floor": 3,
+            "Game Over": 4,
+        }
 
+        '''
+            "Rest Site": 5,
+            "Elite Fight": 6,
+            "Shop": 7,
+            "Question Mark": 8,
+            "Boss": 9
+        '''
+        situation_to_one_hot = {name: [1 if i == idx else 0 for i in range(situations.__len__())] for idx, name in enumerate(situations.keys())}
 
         worldstate_maschinereadable = [
             #self.act_layout,
             #self.current_act,
             #self.potion_chance,
             self.floor_number
-        ]
+            
+        ]+situation_to_one_hot.get(self.situation, [0] * situations.__len__())
 
         playerstate_maschinereadable = self.player.get_State()[1]
 

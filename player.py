@@ -158,10 +158,19 @@ class PlayerCharacter(Character):
                 anzahlKarten += 1
             return padded_cards
         
+        
+        if self.currentcardplaying is None:
+            current_card_state = globals()["NothingCard"]().get_State()[1]
+        else:
+            current_card_state = self.currentcardplaying.get_State()[1]
+
         maschinereadablestate = [
             self.current_hp,
             self.energy
-        ]+pad_cards(self.hand)
+        ] + pad_cards(self.hand) + current_card_state
+
+
+
         '''
         [card.get_State()[1] for card in self.draw_pile],
         [card.get_State()[1] for card in self.discard_pile],
