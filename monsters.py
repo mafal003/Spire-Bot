@@ -39,8 +39,8 @@ class BlockMove(Move):
 
 
 class MonsterCharacter(Character):
-    def __init__(self, monster_id, name, max_hp):
-        super().__init__(monster_id, name, max_hp)
+    def __init__(self, monster_id, name, max_hp,out_print):
+        super().__init__(monster_id, name, max_hp,out_print)
         self.intent = None
         # Liste von Moves, die das Monster ausführen kann, wird für jedes Monster selbst definiert
         self.movelist = []
@@ -89,17 +89,17 @@ class MonsterCharacter(Character):
         return state, maschinereadablestate
 
 class NothingMonster(MonsterCharacter):
-    def __init__(self):
-        super().__init__(monster_id=0, name="Nothing", max_hp=0)
+    def __init__(self,out_print):
+        super().__init__(monster_id=0, name="Nothing", max_hp=0,out_print=out_print)
 
     def get_next_move(self):
         return None
 
 class Cultist(MonsterCharacter):
-    def __init__(self, id, seed):
+    def __init__(self, id, seed,out_print):
         random.seed(seed)
         hp = random.randint(50, 56)
-        super().__init__(monster_id=id, name="Cultist", max_hp=hp)
+        super().__init__(monster_id=id, name="Cultist", max_hp=hp,out_print=out_print)
         self.ritual_applied = False
         self.movelist = [
             [BuffMove(name="Incantation", buff_name="Ritual", buff_value=5)],
@@ -119,10 +119,10 @@ class Cultist(MonsterCharacter):
             self.next_move=self.movelist[self.next_move_index]
 
 class RedLouse(MonsterCharacter):
-    def __init__(self, id, seed):
+    def __init__(self, id, seed,out_print):
         random.seed(seed)
         hp = random.randint(13, 16)
-        super().__init__(monster_id=id, name="Red Louse", max_hp=hp)
+        super().__init__(monster_id=id, name="Red Louse", max_hp=hp,out_print=out_print)
         self.add_buff("Curl Up", random.randint(9, 12))
         self.damage = random.randint(5, 7)
         self.last_intent = None
@@ -159,10 +159,10 @@ class RedLouse(MonsterCharacter):
                 self.next_move=self.movelist[self.next_move_index]
 
 class GreenLouse(MonsterCharacter):
-    def __init__(self, id, seed):
+    def __init__(self, id, seed,out_print):
         random.seed(seed)
         hp = random.randint(12, 18)
-        super().__init__(monster_id=id, name="Green Louse", max_hp=hp)
+        super().__init__(monster_id=id, name="Green Louse", max_hp=hp,out_print=out_print)
         self.add_buff("Curl Up", random.randint(9, 12))
         self.damage = random.randint(5, 7)
         self.last_intent = None
@@ -199,10 +199,10 @@ class GreenLouse(MonsterCharacter):
                 self.next_move=self.movelist[self.next_move_index]
 
 class JawWorm(MonsterCharacter):
-    def __init__(self, id, seed):
+    def __init__(self, id, seed,out_print):
         random.seed(seed)
         hp = random.randint(42, 46)
-        super().__init__(monster_id=id, name="Jaw Worm", max_hp=hp)
+        super().__init__(monster_id=id, name="Jaw Worm", max_hp=hp,out_print=out_print)
         self.last_move = None
         self.thrash_count = 0
         self.movelist = [
@@ -249,10 +249,10 @@ class JawWorm(MonsterCharacter):
         self.next_move=self.movelist[self.next_move_index]
 
 class AcidSlimeM(MonsterCharacter):
-    def __init__(self, id, seed):
+    def __init__(self, id, seed,out_print):
         random.seed(seed)
         hp = random.randint(29, 35)
-        super().__init__(monster_id=id, name="Acid Slime (M)", max_hp=hp)
+        super().__init__(monster_id=id, name="Acid Slime (M)", max_hp=hp,out_print=out_print)
         self.last_move = None
         self.corrosive_spit_count = 0
         self.tackle_count = 0
@@ -300,10 +300,10 @@ class AcidSlimeM(MonsterCharacter):
         self.next_move=self.movelist[self.next_move_index]
     
 class AcidSlimeS(MonsterCharacter):
-    def __init__(self, id, seed):
+    def __init__(self, id, seed,out_print):
         random.seed(seed)
         hp = random.randint(9, 13)
-        super().__init__(monster_id=id, name="Acid Slime (S)", max_hp=hp)
+        super().__init__(monster_id=id, name="Acid Slime (S)", max_hp=hp,out_print=out_print)
         self.movelist = [
             [DebuffMove(name="Lick", debuff_name="Weak", debuff_value=1)],
             [AttackMove(name="Tackle", damage=4)]
@@ -331,10 +331,10 @@ class AcidSlimeS(MonsterCharacter):
             self.next_move=self.movelist[self.next_move_index]
             
 class SpikeSlimeM(MonsterCharacter):
-    def __init__(self, id, seed):
+    def __init__(self, id, seed,out_print):
         random.seed(seed)
         hp = random.randint(29, 34)
-        super().__init__(monster_id=id, name="Spike Slime (M)", max_hp=hp)
+        super().__init__(monster_id=id, name="Spike Slime (M)", max_hp=hp,out_print=out_print)
         self.last_move = None
         self.flame_tackle_count = 0
         self.movelist = [
@@ -372,10 +372,10 @@ class SpikeSlimeM(MonsterCharacter):
         self.next_move=self.movelist[self.next_move_index]
     
 class SpikeSlimeS(MonsterCharacter):
-    def __init__(self, id, seed):
+    def __init__(self, id, seed,out_print):
         random.seed(seed)
         hp = random.randint(11, 15)
-        super().__init__(monster_id=id, name="Spike Slime (S)", max_hp=hp)
+        super().__init__(monster_id=id, name="Spike Slime (S)", max_hp=hp,out_print=out_print)
         self.movelist = [
             [AttackMove(name="Tackle", damage=6)]
         ]

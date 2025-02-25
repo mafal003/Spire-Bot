@@ -5,8 +5,8 @@ import random
 from cards import *
 
 class PlayerCharacter(Character):
-    def __init__(self, player_id, name, max_hp):
-        super().__init__(player_id, name, max_hp)
+    def __init__(self, player_id, name, max_hp,out_print):
+        super().__init__(player_id, name, max_hp,out_print)
         self.current_potions = []
         self.current_hp = math.floor(max_hp*0.9)
         self.max_potion_number = 2
@@ -55,11 +55,13 @@ class PlayerCharacter(Character):
                 self.reshuffle_discard_pile()
             if len(self.draw_pile) == 0:
                 # Wenn der discard pile auch leer ist, kann nicht weiter gezogen werden.
-                print("Du hast keine Karten mehr im Deck!")
+                if self.out_print:
+                    print("Du hast keine Karten mehr im Deck!")
                 break
             card = self.draw_pile.pop()
             self.hand.append(card)
-            print(f"Du ziehst {card}.")
+            if self.out_print:
+                print(f"Du ziehst {card}.")
 
     def discard_hand(self):
         '''
@@ -67,7 +69,8 @@ class PlayerCharacter(Character):
         '''
         self.discard_pile += self.hand
         self.hand = []
-        print("Deine Hand wurde verworfen.")
+        if self.out_print:
+            print("Deine Hand wurde verworfen.")
 
     def shuffle_draw_pile(self):
         random.shuffle(self.draw_pile)
@@ -84,18 +87,22 @@ class PlayerCharacter(Character):
         if len(self.current_potions) < self.max_potion_number:
             self.current_potions.append(potion)
         else:
-            print("Du kannst keine weiteren Tränke aufnehmen!")
+            if self.out_print:
+                print("Du kannst keine weiteren Tränke aufnehmen!")
 
     def use_potion(self, potion_index):
         if 0 <= potion_index < len(self.current_potions):
             potion = self.current_potions.pop(potion_index)
-            print(f"Du benutzt {potion}.")
+            if self.out_print:
+                print(f"Du benutzt {potion}.")
         else:
-            print("Ungültiger Trankindex!")
+            if self.out_print:
+                print("Ungültiger Trankindex!")
 
     def add_relic(self, relic):
         self.relics.append(relic)
-        print(f"Du hast ein neues Relikt erhalten: {relic}")
+        if self.out_print:
+            print(f"Du hast ein neues Relikt erhalten: {relic}")
 
     def add_temp_card(self,cardname,position,statusnumber):
         #temporäre Karten werden erstmal entfernt um das Spiel zu vereinfachen
@@ -116,7 +123,8 @@ class PlayerCharacter(Character):
 
     def add_cards(self, cards):
         self.cards.extend(cards)
-        print(f"Du hast folgende Karten erhalten: {cards}")
+        if self.out_print:
+            print(f"Du hast folgende Karten erhalten: {cards}")
 
 
     def get_State(self):
@@ -165,7 +173,7 @@ class PlayerCharacter(Character):
         
 
 class Ironclad(PlayerCharacter):
-    def __init__(self):
-        super().__init__("0", "Ironclad", 75)
+    def __init__(self,out_print):
+        super().__init__("0", "Ironclad", 75,out_print)
         self.add_relic(all_relics["Burning Blood"])
         self.deck = [Strike() for _ in range(5)] + [Defend() for _ in range(5)]

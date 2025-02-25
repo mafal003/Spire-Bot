@@ -8,13 +8,15 @@ class CombatInterface:
         self.encounter = encounter
         self.round = round
         self.world = world
+        self.out_print = world.out_print
         self.persistent_buffs = ["Barricade", "Ritual","Curl Up","Strength"]
         self.persistent_debuffs = []
         self.phase ="Begin Round"   
         
-        print("Combat started!")
-        print(f"Player: {self.player.name} ({self.player.id})")
-        print(f"Encounter: {[f'{monster.name} ({monster.id})' for monster in self.encounter]}")
+        if self.out_print:
+            print("Combat started!")
+            print(f"Player: {self.player.name} ({self.player.id})")
+            print(f"Encounter: {[f'{monster.name} ({monster.id})' for monster in self.encounter]}")
 
     def start_combat(self):
 
@@ -28,7 +30,8 @@ class CombatInterface:
         
         self.player.end_combat()
         self.trigger_events(self.player.events["on_combat_end"])
-        print("All monsters have been defeated!")
+        if self.out_print:
+            print("All monsters have been defeated!")
         self.world.situation = "Next Floor"
         self.world.next_floor()
 
@@ -36,7 +39,8 @@ class CombatInterface:
         #Berechne alles bis der Spieler dran ist
         while self.phase != "Player Turn":
             if (self.phase == "Begin Round"):
-                print(f"\nRound {self.round}")
+                if self.out_print:
+                    print(f"\nRound {self.round}")
 
                 for character in [self.player] + self.encounter:
                     self.trigger_events(character.events["on_turn_start"],0,0,0)
@@ -58,7 +62,8 @@ class CombatInterface:
                 self.monster_turn()
                 for monster in self.encounter:
                     self.manage_character_buffs_debuffs(monster)
-                print(f"\nRound {self.round} ends!")
+                if self.out_print:
+                    print(f"\nRound {self.round} ends!")
                 self.trigger_events(self.player.events["on_turn_end"],0,0,0)
                 self.round += 1
                 self.phase = "Begin Round"
@@ -101,14 +106,18 @@ class CombatInterface:
                 for move in moves:
                     if isinstance(move, AttackMove):
                         movedamage = self.player.calculate_damage(move.damage,monster)
-                        print(f"{monster.name} intends to use {move.intent} dealing {movedamage} damage.")
+                        if self.out_print:
+                            print(f"{monster.name} intends to use {move.intent} dealing {movedamage} damage.")
                     else:
-                        print(f"{monster.name} intends to use {move.intent}.")
+                        if self.out_print:
+                            print(f"{monster.name} intends to use {move.intent}.")
 
 
     def player_turn(self):
-        print(f"{self.player.name}'s turn!")
-        print(self.world.get_State())
+        if self.out_print:
+            print(f"{self.player.name}'s turn!")
+        if self.out_print:
+            print(self.world.get_State())
         """ 
         # Autoplay für Testzwecke
         if self.world.autoplay:
@@ -187,7 +196,8 @@ class CombatInterface:
 
     def trigger_events(self, events, *args, **kwargs):
         for event in events:
-            print(f"Triggering event: {event}")
+            if self.out_print:
+                print(f"Triggering event: {event}")
             event(*args, **kwargs)
 
 
@@ -211,18 +221,20 @@ class CombatInterface:
                         self.player.add_temp_card(m.statusname,m.position,m.statusnumber)
                 
                 if self.player.current_hp <= 0:
-                    print(f"{self.player.name} has been defeated!")
+                    if self.out_print:
+                        print(f"{self.player.name} has been defeated!")
                     break
 
 class World:
-    def __init__(self, seed, ascension_level=20,autoplay=False,spieler="Ironclad"):
+    def __init__(self, seed, ascension_level=20,autoplay=False,spieler="Ironclad",out_print=False):
         self.ascension_level = ascension_level
         self.act_layout = []  # This can be a list of acts, each act containing a list of floors
         self.floor_number = 0
         self.current_act = 0
         self.seed = seed
         if spieler == "Ironclad":
-            self.player = Ironclad()
+            self.player = Ironclad(out_print)
+        self.out_print = out_print
         self.combat = None
         self.autoplay = autoplay
         self.reward = 0
@@ -237,7 +249,8 @@ class World:
         self.situation = "Creating World"
         self.potion_chance = 0.2
         random.seed(seed)
-        print(f"Seed: {seed}")
+        if self.out_print:
+            print(f"Seed: {seed}")
         
         # Generate the relic list and act layout upon world creation
         self.generate_relic_list(all_relics)
@@ -255,7 +268,8 @@ class World:
         # als basis wird einfach für jeden neuen Floor ein reward von 10 vergeben
 
         self.update_reward(10)
-        print(self.get_reward())
+        if self.out_print:
+            print(self.get_reward())
 
         # Reset the combat interface
         self.combat = None
@@ -307,7 +321,8 @@ class World:
         if rarity in self.relic_list:
             self.relic_list[rarity].append(relic)
         else:
-            print(f"Ungültige Seltenheit: {rarity}")
+            if self.out_print:
+                print(f"Ungültige Seltenheit: {rarity}")
 
     def generate_act_layout(self):
         """
@@ -335,15 +350,7 @@ class World:
                 (["Jaw Worm"], 25),
                 (["Louse", "Louse"], 25),
                 (["Acid Slime (M)", "Acid Slime (S)"], 25)
-            ],
-            1: [
-                (["Troll"], 70),
-                (["Golem"], 80)
-            ],  # Act 2 encounters
-            2: [
-                (["Dragon"], 90),
-                (["Demon"], 100)
-            ]  # Act 3 encounters
+            ]
         }
         act_encounters = encounters.get(self.current_act, [])
         if not act_encounters:
@@ -361,27 +368,27 @@ class World:
         for name in monster_names:
             self.increment_seed()
             if name == "Cultist":
-                monsters.append(Cultist(f"Monster{self.seed}", self.seed))
+                monsters.append(Cultist(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Jaw Worm":
-                monsters.append(JawWorm(f"Monster{self.seed}", self.seed))
+                monsters.append(JawWorm(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Louse":
-                monsters.append(RedLouse(f"Monster{self.seed}", self.seed) if random.random() < 0.5 else GreenLouse(f"Monster{self.seed}", self.seed))
+                monsters.append(RedLouse(f"Monster{self.seed}", self.seed,self.out_print) if random.random() < 0.5 else GreenLouse(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Red Louse":
-                monsters.append(RedLouse(f"Monster{self.seed}", self.seed))
+                monsters.append(RedLouse(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Green Louse":
-                monsters.append(GreenLouse(f"Monster{self.seed}", self.seed))
+                monsters.append(GreenLouse(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Slime (M)":
-                monsters.append(AcidSlimeM(f"Monster{self.seed}", self.seed) if random.random() < 0.5 else SpikeSlimeM(f"Monster{self.seed}", self.seed))
+                monsters.append(AcidSlimeM(f"Monster{self.seed}", self.seed,self.out_print) if random.random() < 0.5 else SpikeSlimeM(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Slime (S)":
-                monsters.append(AcidSlimeS(f"Monster{self.seed}", self.seed) if random.random() < 0.5 else SpikeSlimeS(f"Monster{self.seed}", self.seed))
+                monsters.append(AcidSlimeS(f"Monster{self.seed}", self.seed,self.out_print) if random.random() < 0.5 else SpikeSlimeS(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Acid Slime (M)":
-                monsters.append(AcidSlimeM(f"Monster{self.seed}", self.seed))
+                monsters.append(AcidSlimeM(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Acid Slime (S)":
-                monsters.append(AcidSlimeS(f"Monster{self.seed}", self.seed))
+                monsters.append(AcidSlimeS(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Spike Slime (M)":
-                monsters.append(SpikeSlimeM(f"Monster{self.seed}", self.seed))
+                monsters.append(SpikeSlimeM(f"Monster{self.seed}", self.seed,self.out_print))
             elif name == "Spike Slime (S)":
-                monsters.append(SpikeSlimeS(f"Monster{self.seed}", self.seed))
+                monsters.append(SpikeSlimeS(f"Monster{self.seed}", self.seed,self.out_print))
         return monsters
 
     def increment_seed(self):
@@ -394,7 +401,8 @@ class World:
 
         #check if player is dead
         if self.player.current_hp <= 0:
-            print(f"{self.player.name} has been defeated!")
+            if self.out_print:
+                print(f"{self.player.name} has been defeated!")
             self.situation = "Game Over"
         
         #check if all monsters are dead
@@ -488,7 +496,7 @@ class World:
             padded_monster = []
             for monster in encounter:
                 padded_monster+=monster.get_State()[1] 
-            leeres_monster=globals()["NothingMonster"]()
+            leeres_monster=globals()["NothingMonster"](self.out_print)
             while monsteranzahl < max_length:
                 padded_monster+=leeres_monster.get_State()[1]  # leeres Monster hinzufügen
                 monsteranzahl += 1
@@ -527,8 +535,10 @@ class World:
 
         self.get_action_space()
 
-        print("Taking action: ", action)
-        print("erlaubte Aktionen:",self.actionspace)
+        if self.out_print:
+            print("Taking action: ", action)
+        if self.out_print:
+            print("erlaubte Aktionen:",self.actionspace)
 
         if action not in self.actionspace:
             self.update_reward(-1)
