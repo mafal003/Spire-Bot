@@ -30,7 +30,8 @@ class card:
     def play(self,player,cur_target):
         # Karte wird gespielt
         if player.energy < self.cost:
-            print("Du hast nicht genug Energie!")
+            if player.out_print:
+                print("Du hast nicht genug Energie!")
             return
         player.energy -= self.cost
         for action in self.actions:
@@ -40,7 +41,8 @@ class card:
         else:
             player.discard_pile.append(self)
         player.currentcardplaying = None
-        print(f"{player.name} spielt {self.name}!")
+        if player.out_print:
+            print(f"{player.name} spielt {self.name}!")
 
     def card_name_to_vector(self):
         vektorspace=3

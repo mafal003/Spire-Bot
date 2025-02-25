@@ -8,7 +8,7 @@ seed = 111857
 #seed=193080
 # Beispiel für die Erstellung einer Welt
 welt = World(seed=seed)
-welt = World(seed=seed,autoplay=True)
+welt = World(seed=seed,autoplay=True,out_print=False)
 
 
 # Testen des Cultist-Monsters

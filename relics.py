@@ -32,7 +32,10 @@ class Relic:
 
 all_relics = {
     "Burning Blood": Relic("Burning Blood", "Starter", lambda player: player.events.get("on_combat_end").append(
-        lambda: (player.heal(6), print(f"Burning Blood healed 6 Player HP {player.current_hp}/{player.max_hp}")))),
+        lambda: (player.heal(6), 
+            print(f"Burning Blood healed 6 Player HP {player.current_hp}/{player.max_hp}") if player.out_print else None
+        )
+    )),
 }
 
 
