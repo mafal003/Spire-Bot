@@ -98,6 +98,9 @@ class PlayerCharacter(Character):
         print(f"Du hast ein neues Relikt erhalten: {relic}")
 
     def add_temp_card(self,cardname,position,statusnumber):
+        #temporäre Karten werden erstmal entfernt um das Spiel zu vereinfachen
+        '''
+
         #ein meiner meinung nach sehr ugly hack, um die Karten zu erstellen AKA Class muss gleich cardname sein damit es funktioniert
         card = globals()[cardname]()
         if (position == "Draw Pile"):
@@ -108,6 +111,8 @@ class PlayerCharacter(Character):
             for i in range(statusnumber):
                 self.discard_pile.append(card)
         print(f"Du hast folgende Karte erhalten: {card}")
+        '''
+
 
     def add_cards(self, cards):
         self.cards.extend(cards)
@@ -132,21 +137,28 @@ class PlayerCharacter(Character):
             "energy": self.energy
         }
 
+        def pad_cards(cards, max_length=5):
+
+            anzahlKarten = len(cards)
+            padded_cards =[]
+            for card in cards:
+                cardstate=card.get_State()[1]
+                padded_cards+=cardstate
+            leereKarte=globals()["NothingCard"]()
+            while anzahlKarten < max_length:
+                padded_cards+=leereKarte.get_State()[1]  # leere Karte hinzufügen
+                anzahlKarten += 1
+            return padded_cards
+        
         maschinereadablestate = [
             self.current_hp,
-            self.max_hp,
-            #current potions erstmal ignorieren
-            self.max_potion_number,
-            [relic.get_State()[1] for relic in self.relics],
-            #aufrufen der get_State bei den Karten
-            [card.get_State()[1] for card in self.deck],
-            [card.get_State()[1] for card in self.hand],
-            [card.get_State()[1] for card in self.draw_pile],
-            [card.get_State()[1] for card in self.discard_pile],
-            [card.get_State()[1] for card in self.exhausted],
-            self.max_energy,
             self.energy
-        ]
+        ]+pad_cards(self.hand)
+        '''
+        [card.get_State()[1] for card in self.draw_pile],
+        [card.get_State()[1] for card in self.discard_pile],
+        [card.get_State()[1] for card in self.exhausted],
+        '''
         return state, maschinereadablestate
 
 

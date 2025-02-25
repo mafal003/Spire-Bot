@@ -1,9 +1,6 @@
-#Es gibt insgesamt wohl so 372 Karten in Slay the Spire?
-card_names = ["Strike", "Defend", "Bash", "Slimed"]
+
 #Übersetzung der rarity in eine Zahl 
 rarity = {"Basic":0,"Common":1,"Uncommon":2,"Rare":3,"Special":4,"Curse":5}
-# Erstellen von One-Hot-Encodings für Kartenname dabei bis 400 um raum für misskalkulationen zu lassen
-card_name_to_one_hot = {name: [1 if i == idx else 0 for i in range(400)] for idx, name in enumerate(card_names)}
 # Erstellen von One-Hot-Encodings für Rarity dabei bis 10 um raum für misskalkulationen zu lassen
 card_rarity_to_one_hot = {name: [1 if i == idx else 0 for i in range(10)] for idx, name in enumerate(rarity.keys())}
 
@@ -45,6 +42,16 @@ class card:
         player.currentcardplaying = None
         print(f"{player.name} spielt {self.name}!")
 
+    def card_name_to_vector(self):
+        vektorspace=3
+        name=self.name
+        #Es gibt insgesamt wohl so 372 Karten in Slay the Spire?
+        card_names = ["Nothing","Strike", "Defend", "Bash", "Slimed"]
+        # Erstellen von One-Hot-Encodings für Kartenname dabei erstmal  für Nothing, Strike and Defend
+        card_name_to_one_hot = {name: [1 if i == idx else 0 for i in range(vektorspace)] for idx, name in enumerate(card_names)}
+        return card_name_to_one_hot.get(name, [0] * vektorspace)
+
+
     def get_State(self):
         state = {
             "name": self.name,
@@ -52,13 +59,14 @@ class card:
             "rarity": self.raritiy,
             "value": self.value,
         }
-        maschinereadablestate = [
-            # name der zahl wir über card_names[cardname] aufgelöst und in einem 400 dimensionalen Vektor hot encoded
-            card_name_to_one_hot.get(self.name, [0] * 400),
-            self.cost,
-            card_rarity_to_one_hot.get(self.raritiy, [0] * 10),
-            self.value,
-        ]
+
+        # name der zahl wir über card_names[cardname] aufgelöst und in einem dimensionalen Vektor hot encoded
+        maschinereadablestate =    self.card_name_to_vector()
+        '''
+        self.cost,
+        card_rarity_to_one_hot.get(self.raritiy, [0] * 10),
+        self.value,
+        '''
         return state, maschinereadablestate
 
 class action:
@@ -103,6 +111,12 @@ class Debuffaction(action):
         self.debuff = debuff
     def __call__(self, player, target,card):
         target.add_debuff(self.debuff, self.amount)
+
+#empty card as placeholder
+class NothingCard(card):
+    def __init__(self):
+        super().__init__("Nothing",0,"Basic", [])
+
 
 class Strike(card):
     def __init__(self):

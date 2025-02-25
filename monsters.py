@@ -37,9 +37,6 @@ class BlockMove(Move):
         super().__init__(name, intent)
         self.block_value = block_value
 
-monster_names=["Cultist","Red Louse","Green Louse","Jaw Worm","Acid Slime (M)","Acid Slime (S)","Spike Slime (M)","Spike Slime (S)"]
-# Erstellen von One-Hot-Encodings für Monsternamen dabei bis 80 um raum für misskalkulationen zu lassen
-monster_name_to_one_hot = {name: [1 if i == idx else 0 for i in range(80)] for idx, name in enumerate(monster_names)}
 
 class MonsterCharacter(Character):
     def __init__(self, monster_id, name, max_hp):
@@ -67,6 +64,15 @@ class MonsterCharacter(Character):
             return None
         
         
+    def monster_name_to_vector(self):
+        monster_names=["Nothing","Cultist","Red Louse","Green Louse","Jaw Worm","Acid Slime (M)","Acid Slime (S)","Spike Slime (M)","Spike Slime (S)"]
+        vektorspace=monster_names.__len__()
+        name=self.name
+        # Erstellen von One-Hot-Encodings für Monsternamen , gibt bis zu 80 verschiedene Monster
+        monster_name_to_one_hot = {name: [1 if i == idx else 0 for i in range(vektorspace)] for idx, name in enumerate(monster_names)}
+        return monster_name_to_one_hot.get(name, [0] * vektorspace)
+
+        
     def get_State(self):
         state = {
             "name": self.name,
@@ -77,13 +83,17 @@ class MonsterCharacter(Character):
         }
 
         maschinereadablestate = [
-            monster_name_to_one_hot.get(self.name, [0] * 80),
             self.current_hp,
-            self.max_hp,
             self.next_move_index
-        ]
+        ]+self.monster_name_to_vector()
         return state, maschinereadablestate
 
+class NothingMonster(MonsterCharacter):
+    def __init__(self):
+        super().__init__(monster_id=0, name="Nothing", max_hp=0)
+
+    def get_next_move(self):
+        return None
 
 class Cultist(MonsterCharacter):
     def __init__(self, id, seed):

@@ -36,9 +36,13 @@ while welt.situation != "Game Over":
     #gamestate holen
     gamestate = welt.get_state_human()
     #print(gamestate)
+    print("Gamestate:",welt.get_state_machinereadble())
+    print("Gamestatelengt:",welt.get_state_machinereadble().__len__())
     #actionspace holen
     actionspace = welt.get_action_space()
     print("ActionSpace:",actionspace)
+    print("Entire Actionspace:",welt.get_entire_action_space())
+    print("Größe des Aktionspace:",welt.get_entire_action_space().__len__())
     #action auswählen
     action = ""
     if (welt.autoplay):

@@ -1,0 +1,10 @@
+Episode 1: Seed=195127; Reward = -113
+Episode 2: Seed=165561; Reward = -163
+Episode 3: Seed=995506; Reward = -106
+Episode 4: Seed=364066; Reward = -319
+Episode 5: Seed=179211; Reward = -3
+Episode 6: Seed=619395; Reward = 9
+Episode 7: Seed=729447; Reward = 10
+Episode 8: Seed=589390; Reward = 7
+Episode 9: Seed=332587; Reward = -505
+Episode 10: Seed=607115; Reward = -515

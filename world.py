@@ -215,13 +215,14 @@ class CombatInterface:
                     break
 
 class World:
-    def __init__(self, seed, ascension_level=20,autoplay=False,spieler=Ironclad()):
+    def __init__(self, seed, ascension_level=20,autoplay=False,spieler="Ironclad"):
         self.ascension_level = ascension_level
         self.act_layout = []  # This can be a list of acts, each act containing a list of floors
         self.floor_number = 0
         self.current_act = 0
         self.seed = seed
-        self.player = spieler
+        if spieler == "Ironclad":
+            self.player = Ironclad()
         self.combat = None
         self.autoplay = autoplay
         self.reward = 0
@@ -251,10 +252,10 @@ class World:
     def next_floor(self):
         #grundsärzlich wird der nächste Floor aufgerufen für den moment wird nur einfach ein neuer Combat aufgerufen
 
-        # als basis wird einfach für jeden neuen Floor ein reward von 1000 vergeben
+        # als basis wird einfach für jeden neuen Floor ein reward von 10 vergeben
 
-        self.update_reward(1000)
-
+        self.update_reward(10)
+        print(self.get_reward())
 
         # Reset the combat interface
         self.combat = None
@@ -469,7 +470,7 @@ class World:
             print(monster)
         return [worldstate,playerstate,encounterstate]
     
-    def get_State_machine(self):
+    def get_state_machinereadble(self):
         #Soll den Kompletten State des Spiels zurückgeben maschinenlesbar
 
 
@@ -480,14 +481,26 @@ class World:
             self.floor_number
         ]
 
-        playerstate_maschinereadable = [
-            self.player.get_State()[1]
-        ]
-        encounterstate_maschinereadable = [
-            [monster.get_State()[1] for monster in self.combat.encounter]
-        ]
-        return [worldstate_maschinereadable,playerstate_maschinereadable,encounterstate_maschinereadable]
+        playerstate_maschinereadable = self.player.get_State()[1]
+
+        def pad_monsters(encounter, max_length=2):
+            monsteranzahl = len(encounter)
+            padded_monster = []
+            for monster in encounter:
+                padded_monster+=monster.get_State()[1] 
+            leeres_monster=globals()["NothingMonster"]()
+            while monsteranzahl < max_length:
+                padded_monster+=leeres_monster.get_State()[1]  # leeres Monster hinzufügen
+                monsteranzahl += 1
+            return padded_monster
+        
+        encounterstate_maschinereadable = pad_monsters(self.combat.encounter)
+        return worldstate_maschinereadable+playerstate_maschinereadable+encounterstate_maschinereadable
     
+    def get_entire_action_space(self):
+        #Soll den gesamten möglichen Actionspace zurückgeben
+        actionspace = ["End Turn","Play card:1","Play card:2","Play card:3","Play card:4","Play card:5","Target Monster:1","Target Monster:2"]
+        return actionspace
     
     def get_action_space(self):
         #Soll die möglichen Aktionen des Spielers zurückgeben, in einem Array wobei jede Aktion ein
@@ -511,6 +524,17 @@ class World:
 
 
     def take_action(self,action):
+
+        self.get_action_space()
+
+        print("Taking action: ", action)
+        print("erlaubte Aktionen:",self.actionspace)
+
+        if action not in self.actionspace:
+            self.update_reward(-1)
+            #print("Invalid action")
+            return
+
         if self.situation == "Combat":
 
             if action == "End Turn":
