@@ -238,6 +238,7 @@ class World:
         self.combat = None
         self.autoplay = autoplay
         self.reward = 0
+        self.continous_invalid_action = 0
         self.relic_list = {
             "boss": [],
             "rare": [],
@@ -501,7 +502,8 @@ class World:
             #self.act_layout,
             #self.current_act,
             #self.potion_chance,
-            self.floor_number
+            self.floor_number,
+            self.continous_invalid_action
             
         ]+situation_to_one_hot.get(self.situation, [0] * situations.__len__())
 
@@ -557,9 +559,12 @@ class World:
             print("erlaubte Aktionen:",self.actionspace)
 
         if action not in self.actionspace:
-            self.update_reward(-1)
+            self.continous_invalid_action += 1
+            self.update_reward(-self.continous_invalid_action)
             #print("Invalid action")
             return
+
+        self.continous_invalid_action = 0
 
         if self.situation == "Combat":
 
