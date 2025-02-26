@@ -265,9 +265,9 @@ class World:
     def next_floor(self):
         #grundsärzlich wird der nächste Floor aufgerufen für den moment wird nur einfach ein neuer Combat aufgerufen
 
-        # als basis wird einfach für jeden neuen Floor ein reward von 10 vergeben, außer wenn es der erste Floor ist
+        # als basis wird einfach für jeden neuen Floor ein reward von 20 vergeben, außer wenn es der erste Floor ist
         if self.floor_number != 0:
-            self.update_reward(10)
+            self.update_reward(20)
         if self.out_print:
             print(self.get_reward())
 
@@ -564,6 +564,8 @@ class World:
         if self.situation == "Combat":
 
             if action == "End Turn":
+                #negativer reward für das beenden des Zuges, wenn der Spieler noch energy hat
+                self.update_reward(-self.player.energy)
                 self.combat.phase = "Monster Turn"
                 self.combat.manage_round()
             if action.startswith("Play card:"):
@@ -572,6 +574,9 @@ class World:
                 #Karte aus der Hand entfernen und in currentcardplaying speichern
                 self.player.hand.remove(card)
                 self.player.currentcardplaying = card
+
+                #reward dafür eine Karte zu spielen
+                self.update_reward(1)
 
                 #Wenn die Karte target enemy hat und es mehr als einen gegner gibt, muss der Spieler einen Gegner auswählen
                 if card.needs_target(): 
@@ -585,6 +590,9 @@ class World:
                 
         if self.situation == "Choose Card Target":
             if action.startswith("Target Monster:"):
+                #reward dafür ein Ziel auszuwählen
+                self.update_reward(2)
+
                 monster_index = int(action.split(":")[1])-1
                 target = self.combat.encounter[monster_index]
                 self.player.currentcardplaying.play(self.player, target)

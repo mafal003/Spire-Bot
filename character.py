@@ -38,6 +38,7 @@ class Character:
             unblocked_damage = max(0, amount - self.block)
             self.block = max(0, self.block - amount)
         self.current_hp = max(0, self.current_hp - unblocked_damage)
+
         if self.out_print:
             print(f"{self.name} ({self.id}) nimmt {unblocked_damage} Schaden! HP: {self.current_hp}/{self.max_hp}")
 
