@@ -1,1 +1,1 @@
-Episode 1: Seed=965924; Reward = -33; Floor=1
+Episode 1: Seed=200467; Reward = -887; Floor=2
