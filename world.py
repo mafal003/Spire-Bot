@@ -265,9 +265,9 @@ class World:
     def next_floor(self):
         #grundsärzlich wird der nächste Floor aufgerufen für den moment wird nur einfach ein neuer Combat aufgerufen
 
-        # als basis wird einfach für jeden neuen Floor ein reward von 10 vergeben
-
-        self.update_reward(10)
+        # als basis wird einfach für jeden neuen Floor ein reward von 10 vergeben, außer wenn es der erste Floor ist
+        if self.floor_number != 0:
+            self.update_reward(10)
         if self.out_print:
             print(self.get_reward())
 
