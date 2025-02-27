@@ -1,0 +1,26 @@
+anfang12
+Bisherige Rewards:  1
+Momentaner Rewards:  1
+Aktion:  Play card:2
+Bisherige Rewards:  0
+Momentaner Rewards:  -1
+Aktion:  Play card:2
+Bisherige Rewards:  -2
+Momentaner Rewards:  -2
+Aktion:  Play card:2
+Bisherige Rewards:  -5
+Momentaner Rewards:  -3
+Aktion:  Play card:2
+Bisherige Rewards:  -9
+Momentaner Rewards:  -4
+Aktion:  Play card:2
+Bisherige Rewards:  -14
+Momentaner Rewards:  -5
+Aktion:  Play card:2
+Bisherige Rewards:  -20
+Momentaner Rewards:  -6
+Aktion:  Play card:2
+Bisherige Rewards:  -40
+Momentaner Rewards:  -20
+Aktion:  Play card:2
+Reward gesammelt: -40
