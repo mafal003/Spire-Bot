@@ -559,6 +559,12 @@ class World:
             print("erlaubte Aktionen:",self.actionspace)
 
         if action not in self.actionspace:
+            if self.continous_invalid_action > 5:
+                self.situation = "Game Over"
+                self.update_reward(-20)
+                return
+
+
             self.continous_invalid_action += 1
             self.update_reward(-self.continous_invalid_action)
             #print("Invalid action")
