@@ -1,6 +1,7 @@
 import random
 from monsters import *
 from player import *
+import numpy as np
 
 class CombatInterface:
     def __init__(self, player, encounter,world, round=1):
@@ -521,7 +522,12 @@ class World:
             return padded_monster
         
         encounterstate_maschinereadable = pad_monsters(self.combat.encounter)
-        return worldstate_maschinereadable+playerstate_maschinereadable+encounterstate_maschinereadable
+        state = worldstate_maschinereadable+playerstate_maschinereadable+encounterstate_maschinereadable
+        # Standardisieren der Werte im Array
+        state = np.array(state, dtype=float)
+        state[state > 1] = 1 - np.exp(-state[state > 1])
+
+        return state.tolist()
     
     def get_entire_action_space(self):
         #Soll den gesamten möglichen Actionspace zurückgeben

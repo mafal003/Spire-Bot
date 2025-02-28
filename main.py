@@ -1,4 +1,5 @@
 #In dieser File teste ich die Funktionalität des Spiels
+
 from world import *
 
 
@@ -42,7 +43,7 @@ while welt.situation != "Game Over":
     actionspace = welt.get_action_space()
     #print("ActionSpace:",actionspace)
     #print("Entire Actionspace:",welt.get_entire_action_space())
-    #print("Größe des Aktionspace:",welt.get_entire_action_space().__len__())
+    print("Größe des Aktionspace:",welt.get_state_machinereadble())
     #action auswählen
     action = ""
     if (welt.autoplay):
