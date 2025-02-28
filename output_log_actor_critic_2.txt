@@ -1,0 +1,31 @@
+Momentaner Reward: 1
+Gesammelter Reward: 1
+Gewählte Aktion: Play card:3
+Momentaner Reward: 1
+Gesammelter Reward: 2
+Gewählte Aktion: Play card:3
+Momentaner Reward: 1
+Gesammelter Reward: 3
+Gewählte Aktion: Play card:3
+Momentaner Reward: -1
+Gesammelter Reward: 2
+Gewählte Aktion: Play card:3
+Momentaner Reward: -2
+Gesammelter Reward: 0
+Gewählte Aktion: Play card:3
+Momentaner Reward: -3
+Gesammelter Reward: -3
+Gewählte Aktion: Play card:3
+Momentaner Reward: -4
+Gesammelter Reward: -7
+Gewählte Aktion: Play card:3
+Momentaner Reward: -5
+Gesammelter Reward: -12
+Gewählte Aktion: Play card:3
+Momentaner Reward: -6
+Gesammelter Reward: -18
+Gewählte Aktion: Play card:3
+Momentaner Reward: -20
+Gesammelter Reward: -38
+Gewählte Aktion: Play card:3
+Gesamter Reward: -38
